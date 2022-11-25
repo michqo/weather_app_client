@@ -32,15 +32,20 @@ def log(msg):
     f.write(f"{msg}\n")
     f.close()
 
+log("started")
+
 tries = 1
 def measure(kind = ""):
     try:
         sensor.measure()
         temp = sensor.temperature()
         humidity = sensor.humidity()
+        if temp == -50.0:
+            sleep(60)
+            return measure(kind)
         if kind == "hour":
             global tries
-            log(f"Measured: {temp}, tries: {tries}")
+            log(f"Measured: {temp}, humidity: {humidity} tries: {tries}")
         return {
             "averageTemp": str(temp),
             "humidity": str(humidity)
@@ -48,18 +53,19 @@ def measure(kind = ""):
     except OSError:
         global tries
         log(f"Error occured in measure(), sleep for: {tries * 30}")
-    tries += 1
-    if tries > 4:
-        tries = 1
-        return "{}"
-    sleep(tries * 30)
-    return measure()
+        tries += 1
+        if tries > 4:
+            tries = 1
+            return "{}"
+        sleep(tries * 30)
+        return measure()
 
 tries2 = 1
 def post_temp():
     try:
         data = ujson.dumps(measure("hour"))
-        requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
+        res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
+        log(res)
     except:
         global tries2
         log(f"Error occured in hour(), tries2: {tries2}")
@@ -88,5 +94,3 @@ tim1 = Timer(1)
 tim0.init(period=(1000 * 60 * 60), mode=Timer.PERIODIC, callback=lambda _:hour())
 
 hour()
-
-log("started")
