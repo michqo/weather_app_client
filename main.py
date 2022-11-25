@@ -14,12 +14,12 @@ PASS = ''
 SECRET = ''
 
 def connect_wifi():
-	wlan = network.WLAN(network.STA_IF)
-	wlan.active(True)
-	if not wlan.isconnected():
-		wlan.connect(SSID, PASS)
-		while not wlan.isconnected():
-			machine.idle()
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    if not wlan.isconnected():
+        wlan.connect(SSID, PASS)
+        while not wlan.isconnected():
+            machine.idle()
 
 sensor = dht.DHT22(Pin(15))
 
