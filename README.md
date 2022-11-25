@@ -6,7 +6,20 @@
 
 - ESP32 development board
 - Python 3.8.0 (install with [pyenv](https://github.com/pyenv/pyenv))
-- Installed ampy with pip
+
+## Uploading your code
+
+1. Install ampy
+
+```bash
+pip3 install --user adafruit-ampy
+```
+
+2. Upload code
+
+```bash
+ampy --port /dev/ttyUSB0 --baud 115200 put main.py
+```
 
 ## Links
 
