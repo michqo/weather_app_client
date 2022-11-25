@@ -34,18 +34,19 @@ def log(msg):
 
 tries = 1
 def measure(kind = ""):
-    global tries
     try:
         sensor.measure()
         temp = sensor.temperature()
         humidity = sensor.humidity()
         if kind == "hour":
+            global tries
             log(f"Measured: {temp}, tries: {tries}")
         return {
             "averageTemp": str(temp),
             "humidity": str(humidity)
         }
     except OSError:
+        global tries
         log(f"Error occured in measure(), sleep for: {tries * 30}")
     tries += 1
     if tries > 4:
