@@ -34,24 +34,24 @@ def log(msg):
 
 tries = 1
 def measure(kind = ""):
+  global tries
   try:
     sensor.measure()
     temp = sensor.temperature()
     humidity = sensor.humidity()
     if kind == "hour":
-      log(f"Measured: {temp}")
+      log(f"Measured: {temp}, tries: {tries}")
     return {
       "averageTemp": str(temp),
       "humidity": str(humidity)
     }
   except OSError:
-    global tries
     log(f"Error occured in measure(), sleep for: {tries * 30}")
+    tries += 1
     if tries > 4:
       tries = 1
       return "{}"
     sleep(tries * 30)
-    tries += 1
     return measure()
 
 tries2 = 1
@@ -62,12 +62,12 @@ def post_temp():
   except:
     global tries2
     log(f"Error occured in hour(), tries2: {tries2}")
-    if tries2 >= 2:
+    tries2 += 1
+    if tries2 >= 3:
       tries2 = 1
       return
     sleep(tries2 * 60 * 3)
     post_temp()
-    tries2 += 1
 
 def last():
   data = ujson.dumps(measure())
