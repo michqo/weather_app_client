@@ -48,7 +48,7 @@ def measure(kind = ""):
             log(f"Measured: {temp}, humidity: {humidity} tries: {tries}")
         return {
             "averageTemp": str(round(temp, 1)),
-            "humidity": str(round(temp, 1))
+            "humidity": str(round(humidity, 1))
         }
     except OSError:
         global tries
