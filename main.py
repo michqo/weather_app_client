@@ -7,11 +7,9 @@ import network
 import urequests as requests
 import ujson
 
-sleep(2)
+from env import SSID, PASS, SECRET
 
-SSID = ''
-PASS = ''
-SECRET = ''
+sleep(2)
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
