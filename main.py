@@ -33,7 +33,7 @@ def log(msg):
 if LOG:
     log("started")
 
-tries = 1
+tries = 0
 def measure():
     try:
         sensor.measure()
@@ -52,26 +52,28 @@ def measure():
         if LOG:
             log(f"Error occured in measure(), sleep for: {tries * 30}")
         tries += 1
-        if tries > 4:
-            tries = 1
+        if tries >= 2:
+            tries = 0
             return "{}"
         sleep(tries * 30)
         return measure()
 
-tries2 = 1
+tries2 = 0
 def post_temp():
     try:
         data = ujson.dumps(measure())
-        requests.post(address, headers = {'content-type': 'application/json'}, data = data)
+        res = requests.post(address, headers = {'content-type': 'application/json'}, data = data)
+        if LOG:
+            log(res.json())
     except:
         global tries2
         if LOG:
             log(f"Error occured in hour(), tries2: {tries2}")
         tries2 += 1
         if tries2 >= 3:
-            tries2 = 1
+            tries2 = 0
             return
-        sleep(tries2 * 60 * 3)
+        sleep(tries2 * 60)
         post_temp()
 
 def last():
