@@ -6,3 +6,4 @@ Fill out these variables and rename the file to env.py
 SSID = '' # WiFi ssid
 PASS = '' # WiFi pass
 SECRET = '' # Secret token
+LOG = False # Have logging enabled/disabled

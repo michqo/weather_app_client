@@ -7,7 +7,7 @@ import network
 import urequests as requests
 import ujson
 
-from env import SSID, PASS, SECRET
+from env import SSID, PASS, SECRET, LOG
 
 sleep(2)
 
@@ -30,7 +30,8 @@ def log(msg):
     f.write(f"{msg}\n")
     f.close()
 
-log("started")
+if LOG:
+    log("started")
 
 tries = 1
 def measure():
@@ -48,7 +49,8 @@ def measure():
         return data
     except OSError:
         global tries
-        log(f"Error occured in measure(), sleep for: {tries * 30}")
+        if LOG:
+            log(f"Error occured in measure(), sleep for: {tries * 30}")
         tries += 1
         if tries > 4:
             tries = 1
@@ -60,11 +62,11 @@ tries2 = 1
 def post_temp():
     try:
         data = ujson.dumps(measure())
-        res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
-        log(res)
+        requests.post(address, headers = {'content-type': 'application/json'}, data = data)
     except:
         global tries2
-        log(f"Error occured in hour(), tries2: {tries2}")
+        if LOG:
+            log(f"Error occured in hour(), tries2: {tries2}")
         tries2 += 1
         if tries2 >= 3:
             tries2 = 1
@@ -75,7 +77,7 @@ def post_temp():
 def last():
     try:
         data = ujson.dumps(measure())
-        requests.post(address2, headers = {'content-type': 'application/json'}, data = data).json()
+        requests.post(address2, headers = {'content-type': 'application/json'}, data = data)
     except:
         pass
 
