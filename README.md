@@ -15,6 +15,10 @@
 pip3 install --user adafruit-ampy
 ```
 
+3. Fill out env.py
+
+Follow env.example.py to set your own secret variables.
+
 2. Upload code
 
 ```bash
