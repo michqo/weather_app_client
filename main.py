@@ -33,12 +33,15 @@ def log(msg):
 if LOG:
     log("started")
 
+# TODO: Implement better recursion
+
 tries = 0
 def measure():
     try:
         sensor.measure()
         temp = sensor.temperature()
         humidity = sensor.humidity()
+        # For when sensor measures incorrectly
         if temp == -50.0:
             sleep(60)
             return measure()
@@ -62,9 +65,9 @@ tries2 = 0
 def post_temp():
     try:
         data = ujson.dumps(measure())
-        res = requests.post(address, headers = {'content-type': 'application/json'}, data = data)
+        res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
         if LOG:
-            log(res.json())
+            log(res)
     except:
         global tries2
         if LOG:
@@ -79,7 +82,7 @@ def post_temp():
 def last():
     try:
         data = ujson.dumps(measure())
-        requests.post(address2, headers = {'content-type': 'application/json'}, data = data)
+        requests.post(address2, headers = {'content-type': 'application/json'}, data = data).json()
     except:
         pass
 
