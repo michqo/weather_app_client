@@ -6,10 +6,18 @@ import dht
 import network
 import urequests as requests
 import ujson
-
 from env import SSID, PASS, SECRET, LOG
 
 sleep(2)
+
+URL = "https://weather-uno.fly.dev"
+address = f"{URL}/add_temp2/{SECRET}"
+address2 = f"{URL}/add_last_temp/{SECRET}"
+
+tim0 = Timer(0)
+tim1 = Timer(1)
+
+sensor = dht.DHT22(Pin(15))
 
 def connect_wifi():
     wlan = network.WLAN(network.STA_IF)
@@ -18,12 +26,6 @@ def connect_wifi():
         wlan.connect(SSID, PASS)
         while not wlan.isconnected():
             machine.idle()
-
-sensor = dht.DHT22(Pin(15))
-
-URL = "https://weather-uno.fly.dev"
-address = f"{URL}/add_temp2/{SECRET}"
-address2 = f"{URL}/add_last_temp/{SECRET}"
 
 def log(msg):
     f = open("log.txt", "a")
@@ -35,7 +37,7 @@ if LOG:
 
 # TODO: Implement better recursion
 
-tries = 0
+tries = 1
 def measure():
     try:
         sensor.measure()
@@ -43,6 +45,8 @@ def measure():
         humidity = sensor.humidity()
         # For when sensor measures incorrectly
         if temp == -50.0:
+            if LOG:
+                log("Temp is -50")
             sleep(60)
             return measure()
         data = {
@@ -51,17 +55,17 @@ def measure():
         }
         return data
     except OSError:
-        global tries
         if LOG:
-            log(f"Error occured in measure(), sleep for: {tries * 30}")
-        tries += 1
+            log(f"Error occured in measure()")
+        global tries
         if tries >= 2:
-            tries = 0
+            tries = 1
             return "{}"
         sleep(tries * 30)
+        tries += 1
         return measure()
 
-tries2 = 0
+tries2 = 1
 def post_temp():
     try:
         data = ujson.dumps(measure())
@@ -69,14 +73,14 @@ def post_temp():
         if LOG:
             log(res)
     except:
-        global tries2
         if LOG:
-            log(f"Error occured in hour(), tries2: {tries2}")
-        tries2 += 1
-        if tries2 >= 3:
-            tries2 = 0
+            log(f"Error occured in hour()")
+        global tries2
+        if tries2 > 2:
+            tries2 = 1
             return
         sleep(tries2 * 60)
+        tries2 += 1
         post_temp()
 
 def last():
@@ -88,12 +92,12 @@ def last():
 
 def hour():
     tim1.deinit()
+    if LOG:
+        log("hour")
     connect_wifi()
     post_temp()
     tim1.init(period=(int(1000 * 60 * 10.3)), mode=Timer.PERIODIC, callback=lambda _:last())
 
-tim0 = Timer(0)
-tim1 = Timer(1)
-tim0.init(period=(1000 * 60 * 60), mode=Timer.PERIODIC, callback=lambda _:hour())
-
 hour()
+
+tim0.init(period=(1000 * 60 * 60), mode=Timer.PERIODIC, callback=lambda _:hour())
