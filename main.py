@@ -35,8 +35,6 @@ def log(msg):
 if LOG:
     log("started")
 
-# TODO: Implement better recursion
-
 tries = 1
 def measure():
     try:
@@ -92,8 +90,6 @@ def last():
 
 def hour():
     tim1.deinit()
-    if LOG:
-        log("hour")
     connect_wifi()
     post_temp()
     tim1.init(period=(int(1000 * 60 * 10.3)), mode=Timer.PERIODIC, callback=lambda _:last())
