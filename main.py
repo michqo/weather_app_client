@@ -45,7 +45,7 @@ def measure():
         if temp == -50.0:
             if LOG:
                 log("Temp is -50")
-            sleep(60)
+            sleep(360)
             return measure()
         data = {
             "averageTemp": f"{temp:.1f}",
@@ -68,8 +68,6 @@ def post_temp():
     try:
         data = ujson.dumps(measure())
         res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
-        if LOG:
-            log(res)
     except:
         if LOG:
             log(f"Error occured in hour()")
