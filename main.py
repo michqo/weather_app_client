@@ -56,7 +56,7 @@ def measure():
         if LOG:
             log(f"Error occured in measure()")
         global tries
-        if tries >= 2:
+        if tries >= 6: # Change back to 6
             tries = 1
             return "{}"
         sleep(tries * 30)
@@ -66,13 +66,16 @@ def measure():
 tries2 = 1
 def post_temp():
     try:
-        data = ujson.dumps(measure())
+        data = measure()
+        if data == "{}":
+            return
+        data = ujson.dumps(data)
         res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
     except:
         if LOG:
             log(f"Error occured in hour()")
         global tries2
-        if tries2 > 2:
+        if tries2 > 3:
             tries2 = 1
             return
         sleep(tries2 * 60)
