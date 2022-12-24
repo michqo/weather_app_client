@@ -4,24 +4,26 @@
 
 ## Requirements
 
-- ESP32 development board
+- MicroPython compatible development board
 - Python 3.8.0 (install with [pyenv](https://github.com/pyenv/pyenv))
 
 ## Uploading your code
 
 1. Install ampy
 
-```bash
+```
 pip3 install --user adafruit-ampy
 ```
 
-3. Fill out env.py
+3. Fill out env.example.py and rename to env.py
 
-Follow env.example.py to set your own secret variables.
+```
+ampy --port /dev/ttyUSB0 --baud 115200 put env.py
+```
 
 2. Upload code
 
-```bash
+```
 ampy --port /dev/ttyUSB0 --baud 115200 put main.py
 ```
 
