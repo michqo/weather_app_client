@@ -4,7 +4,7 @@
 
 ## Requirements
 
-- MicroPython compatible development board
+- MicroPython compatible development board (e.g. esp32)
 - Python 3.8.0 (install with [pyenv](https://github.com/pyenv/pyenv))
 
 ## Uploading your code
