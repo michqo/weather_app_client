@@ -73,7 +73,7 @@ def post_temp():
         res = requests.post(address, headers = {'content-type': 'application/json'}, data = data).json()
     except:
         if LOG:
-            log(f"Error occured in hour()")
+            log(f"Error occured in post_temp()")
         global tries2
         if tries2 > 3:
             tries2 = 1

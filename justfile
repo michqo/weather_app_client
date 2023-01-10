@@ -1,2 +1,2 @@
 upload:
-  ampy --port /dev/ttyUSB0 --baud 115200 put main.py
+  ampy --port /dev/ttyACM0 --baud 115200 put main.py
